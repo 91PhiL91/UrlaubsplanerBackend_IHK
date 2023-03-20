@@ -1,0 +1,25 @@
+  "firstName": "Rick",
+    "password": "1234",
+    "lastName": "Mitarbeiter",
+    "email": "rick@mitarbeiter.com",
+    "totalVacation": 25,
+    "restVacation": 5,
+    "plannedVacation": 20,
+    "takedVacation": 0,
+    "teamID": "0"
+}
+
+Team:
+
+PickelRick ID (fa89ad71-f3f6-4861-be5b-6b3806ba335f) ist TeamLeiter von Beratung
+Morty ID(7abdad0b-3f7a-499b-9098-1aeffeb81d0a) ist TeamLeiter von Anwendungs Entwicklung
+
+
+
+Rollen :
+
+"roleName" : "Mitarbeiter" ID: 9b30affa-fe35-4a25-96da-789e44918d30
+ "roleName" : "Vorgesetzter" ID: 471a4f0a-02b6-49d9-8f45-ec1101bdf856
+    "roleName" : "Mitarbeiter Personalabteilung" ID:08539bc8-52d8-4657-930b-a078b1f3e0dc 
+
+    "roleName" : "Administrator"  ID: ebf22577-8487-47ff-bd2c-dfde1daeb9ae
