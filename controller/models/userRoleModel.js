@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
 const sequelize = require('../dbConnector/sqlite/sqliteConnector');
+const Sequelize = require('sequelize');
 const User = require('./userModel');
 const Role = require('./roleModel');
 
@@ -8,7 +8,7 @@ const Role = require('./roleModel');
 
 const UserRole = sequelize.define('UserRole',{
      
-    UserRoleID: {
+    userRoleID: {
         type: Sequelize.STRING,
         primaryKey: true,
         unique: true,
@@ -22,7 +22,7 @@ const UserRole = sequelize.define('UserRole',{
         allowNull: true,
         references: {
             // This is a reference to another model
-            model: "User",
+            model: 'User',
 
             // This is the column name of the referenced model
             key: 'userID',
@@ -37,14 +37,20 @@ const UserRole = sequelize.define('UserRole',{
             model: "Role",
 
             // This is the column name of the referenced model
-            key: "roleID",
+            key: 'roleID',
         }
     
     }
 },{
-        tableName:"UserRole"
+        tableName:"UserRole",
+        
+        
     }     
 );
+
+ UserRole.belongsTo(User, {foreignKey: 'userID'});
+ UserRole.belongsTo(Role, {foreignKey: 'roleID'});
+
 
 
 module.exports= UserRole;

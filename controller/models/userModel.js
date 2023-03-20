@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../dbConnector/sqlite/sqliteConnector');
-
+const Role = require('./roleModel');
 
 
 const User = sequelize.define('User', {
@@ -40,14 +40,18 @@ const User = sequelize.define('User', {
   teamID: {
     type: Sequelize.STRING,
    references: {
-      model: 'Team',
+      model: "Team",
       key: 'teamID'
     }
   }
 },{
-  tableName: "User"
+
+  tableName: "User",
+
+ 
+  
 });
 
-//User.hasMany(UserRole, { foreignKey: 'userID'});
+ 
 
 module.exports = User;

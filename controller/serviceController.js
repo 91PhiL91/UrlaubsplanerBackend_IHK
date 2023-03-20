@@ -192,4 +192,84 @@ router.put('/api/Role', async (req, res) => {
 });
 
 
+
+
+
+
+/* -------------------------------------------------------------------API/UserRole------------------------------------------------------------------------------------*/
+
+
+/*---Post UserRole ---*/
+
+router.post('/api/UserRole', async (req, res) => {
+  try {
+    const data = req.body;
+    console.log(data);
+    const newUserRole = UserRole.build({
+      userRoleID: uuidv4(),
+      userID: req.body.userID,
+      roleID: req.body.roleID,
+
+    });
+
+    await newUserRole.save();
+    console.log('Mitarbeiter wurde erfogleich eine Rolle zugewiesen.');
+    res.status(200).send();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error });
+  }
+});
+
+
+/*---GET UserRole ---*/
+
+// router.get('/api/UserRole' , async (req, res) => {
+// try {
+  
+//   const userRoles = await UserRole.findAll();
+//   console.log(userRoles);
+//   res.send({userRoles});
+
+// } catch (error) {
+//   res.send.error(error);
+//   console.log(error);
+
+// }
+
+
+// });
+
+
+
+router.get('/api/UserRole', async (req, res) => {
+  try {
+    const userRoles = await UserRole.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ['firstName', 'lastName']
+        },
+        {
+          model: Role,
+          attributes: ['roleName']
+        }
+      ]
+    });
+    
+    const formattedUserRoles = userRoles.map(userRole => {
+      const { userID, roleID, User, Role } = userRole;
+      const { firstName, lastName } = User;
+      const { roleName } = Role;
+      return { userID, roleID, firstName, lastName, roleName };
+    });
+    
+    console.log(formattedUserRoles);
+    res.send({ userRoles: formattedUserRoles });
+  } catch (error) {
+    console.log(error);
+    res.send(error);
+  }
+});
+
 module.exports = router;

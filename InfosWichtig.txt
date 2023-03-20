@@ -23,3 +23,8 @@ Rollen :
     "roleName" : "Mitarbeiter Personalabteilung" ID:08539bc8-52d8-4657-930b-a078b1f3e0dc 
 
     "roleName" : "Administrator"  ID: ebf22577-8487-47ff-bd2c-dfde1daeb9ae
+
+
+
+
+Rollen zuweisung:  Meeseks  hat 3 Rollen   Mitarbeiter, Mitarbeiter Personalabteilung und Vorgesetzter
