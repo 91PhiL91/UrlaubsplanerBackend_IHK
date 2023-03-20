@@ -11,8 +11,8 @@
 
 Team:
 
-PickelRick ID (fa89ad71-f3f6-4861-be5b-6b3806ba335f) ist TeamLeiter von Beratung
-Morty ID(7abdad0b-3f7a-499b-9098-1aeffeb81d0a) ist TeamLeiter von Anwendungs Entwicklung
+PickelRick ID (fa89ad71-f3f6-4861-be5b-6b3806ba335f) ist TeamLeiter von Beratung ID eee02325-25c7-4b3c-b040-641c576cca06
+Morty ID(7abdad0b-3f7a-499b-9098-1aeffeb81d0a) ist TeamLeiter von Anwendungs Entwicklung ID 4e9785f9-a49d-4ca6-8101-dc4b0419a411
 
 
 
