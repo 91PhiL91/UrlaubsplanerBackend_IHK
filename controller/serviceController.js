@@ -16,7 +16,7 @@ const bcrypt = require('bcrypt');
 /* -------------------------------------------------------------------API/User------------------------------------------------------------------------------------*/
 
 
-
+//Beim Erstellen muss eine gültige Team ID eingegeben werden sonst fehler.
 /*---CreateNew User in DB--- */
 router.post('/api/User', async (req, res) => {
   try {
@@ -113,6 +113,24 @@ router.get('/api/User', async (req, res) => {
   }
 
 });
+
+/*--- DELETE User--*/
+router.delete('/api/User', async (req, res) => {
+ try {
+  var data = req.body.userID;
+  if(data) {
+    await Vacation.destroy({where: {userID : data}});
+    await User.destroy({where : {userID : data}});
+  }
+
+  res.send("Benutzer wurde gelöscht");
+
+} catch (error) {
+  
+}
+
+});
+
 
 
 /* -------------------------------------------------------------------API/USERTEAM------------------------------------------------------------------------------------*/
@@ -224,24 +242,6 @@ router.post('/api/UserRole', async (req, res) => {
 
 /*---GET UserRole ---*/
 
-// router.get('/api/UserRole' , async (req, res) => {
-// try {
-  
-//   const userRoles = await UserRole.findAll();
-//   console.log(userRoles);
-//   res.send({userRoles});
-
-// } catch (error) {
-//   res.send.error(error);
-//   console.log(error);
-
-// }
-
-
-// });
-
-
-
 router.get('/api/UserRole', async (req, res) => {
   try {
     const userRoles = await UserRole.findAll({
@@ -271,5 +271,7 @@ router.get('/api/UserRole', async (req, res) => {
     res.send(error);
   }
 });
+
+
 
 module.exports = router;
