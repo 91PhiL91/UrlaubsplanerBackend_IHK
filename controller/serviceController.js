@@ -310,7 +310,20 @@ try {
 }
 });
 
+/*--- GET Vacation---*/
 
+router.get('/api/Vacation', async (req, res)=> {
+try {
+    
+    const vacationAll = await Vacation.findAll();
+    console.log(vacationAll);
+    res.send(vacationAll);
+
+} catch (error) {
+  console.error(error);
+  res.send(error);
+}
+});
 
 
 
