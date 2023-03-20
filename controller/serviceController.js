@@ -158,6 +158,9 @@ router.post('/api/Team', async (req, res) => {
   }
 });
 
+
+
+
 /* -------------------------------------------------------------------API/Role------------------------------------------------------------------------------------*/
 
 
@@ -261,7 +264,7 @@ router.get('/api/UserRole', async (req, res) => {
       const { userID, roleID, User, Role } = userRole;
       const { firstName, lastName } = User;
       const { roleName } = Role;
-      return { userID, roleID, firstName, lastName, roleName };
+      return { firstName, lastName, roleName, userID, roleID };
     });
     
     console.log(formattedUserRoles);
@@ -271,6 +274,44 @@ router.get('/api/UserRole', async (req, res) => {
     res.send(error);
   }
 });
+
+
+/* -------------------------------------------------------------------API/Vacation------------------------------------------------------------------------------------*/
+
+/*--- POST Vacation---*/
+
+router.post('/api/Vacation', async (req, res) => {
+try {
+
+
+  
+ await Vacation.sync();
+  const newVacation = Vacation.build({
+    vacationID: uuidv4(),
+    status: req.body.status,
+    titel: req.body.titel,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    isRead: req.body.isRead,
+    userID: req.body.userID
+
+  });
+
+  console.log(newVacation);
+
+  await newVacation.save();
+  console.log('Urlaub wurde gepseichert.')
+  res.send(newVacation);
+  
+} catch (error) {
+  console.error(error);
+  res.send({error});
+  
+}
+});
+
+
+
 
 
 
