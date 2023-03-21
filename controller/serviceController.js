@@ -116,18 +116,18 @@ router.get('/api/User', async (req, res) => {
 
 /*--- DELETE User--*/
 router.delete('/api/User', async (req, res) => {
- try {
-  var data = req.body.userID;
-  if(data) {
-    await Vacation.destroy({where: {userID : data}});
-    await User.destroy({where : {userID : data}});
+  try {
+    var data = req.body.userID;
+    if (data) {
+      await Vacation.destroy({ where: { userID: data } });
+      await User.destroy({ where: { userID: data } });
+    }
+
+    res.send("Benutzer wurde gelöscht");
+
+  } catch (error) {
+
   }
-
-  res.send("Benutzer wurde gelöscht");
-
-} catch (error) {
-  
-}
 
 });
 
@@ -167,15 +167,15 @@ router.post('/api/Team', async (req, res) => {
 
 /*--- POST Role ---*/
 router.post('/api/Role', async (req, res) => {
-  
-  
+
+
   try {
-    
+
     await Role.sync();
     const newRole = Role.build({
       roleID: uuidv4(),
       roleName: req.body.roleName
-      
+
     });
 
     await newRole.save();
@@ -193,13 +193,13 @@ router.post('/api/Role', async (req, res) => {
 router.put('/api/Role', async (req, res) => {
   try {
 
-    
+
 
     //Aktualisiere den Role mit den angegebenen Werten
     await Role.update({
       roleID: req.body.roleID,
       roleName: req.body.roleName
-     
+
 
     },
       { where: { roleID: req.body.roleID } });
@@ -259,14 +259,14 @@ router.get('/api/UserRole', async (req, res) => {
         }
       ]
     });
-    
+
     const formattedUserRoles = userRoles.map(userRole => {
       const { userID, roleID, User, Role } = userRole;
       const { firstName, lastName } = User;
       const { roleName } = Role;
       return { firstName, lastName, roleName, userID, roleID };
     });
-    
+
     console.log(formattedUserRoles);
     res.send({ userRoles: formattedUserRoles });
   } catch (error) {
@@ -281,68 +281,68 @@ router.get('/api/UserRole', async (req, res) => {
 /*--- POST Vacation---*/
 
 router.post('/api/Vacation', async (req, res) => {
-try {
+  try {
 
 
-  
- await Vacation.sync();
-  const newVacation = Vacation.build({
-    vacationID: uuidv4(),
-    status: req.body.status,
-    titel: req.body.titel,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-    isRead: req.body.isRead,
-    userID: req.body.userID
 
-  });
+    await Vacation.sync();
+    const newVacation = Vacation.build({
+      vacationID: uuidv4(),
+      status: req.body.status,
+      titel: req.body.titel,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      isRead: req.body.isRead,
+      userID: req.body.userID
 
-  console.log(newVacation);
+    });
 
-  await newVacation.save();
-  console.log('Urlaub wurde gepseichert.')
-  res.send(newVacation);
-  
-} catch (error) {
-  console.error(error);
-  res.send({error});
-  
-}
+    console.log(newVacation);
+
+    await newVacation.save();
+    console.log('Urlaub wurde gepseichert.')
+    res.send(newVacation);
+
+  } catch (error) {
+    console.error(error);
+    res.send({ error });
+
+  }
 });
 
 /*--- GET Vacation---*/
+//Muss noch auf ID angepasst werden FE
+router.get('/api/Vacation', async (req, res) => {
+  try {
 
-router.get('/api/Vacation', async (req, res)=> {
-try {
-    
     const vacationAll = await Vacation.findAll();
     console.log(vacationAll);
     res.send(vacationAll);
 
-} catch (error) {
-  console.error(error);
-  res.send(error);
-}
+  } catch (error) {
+    console.error(error);
+    res.send(error);
+  }
 });
 
 /*--- DELETE Vacation--*/
 router.delete('/api/Vacation', async (req, res) => {
- try {
-  const {userID, vacationID} = req.body;
-  if(userID && vacationID) {
-    await Vacation.destroy({where: {userID, vacationID}});
-    res.send("Urlaub wurde gelöscht");
-  } else {
-    res.send("Bitte geben Sie sowohl userID als auch urlaubsID an!")
+  try {
+    const { userID, vacationID } = req.body;
+    if (userID && vacationID) {
+      await Vacation.destroy({ where: { userID, vacationID } });
+      res.send("Urlaub wurde gelöscht");
+    } else {
+      res.send("Bitte geben Sie sowohl userID als auch urlaubsID an!")
+    }
+
+
+
+  } catch (error) {
+    console.error(error);
+    res.send("Urlaub wurde nicht gelöscht!");
+    res.send(error);
   }
-
-  
-
-} catch (error) {
-  console.error(error);
-  res.send("Urlaub wurde nicht gelöscht!");
-  res.send(error);
-}
 
 });
 
@@ -354,22 +354,22 @@ router.delete('/api/Vacation', async (req, res) => {
 router.put('/api/Vacation', async (req, res) => {
   try {
 
-    
+
 
     //Aktualisiere den Role mit den angegebenen Werten
     await Vacation.update({
-      
-    
+
+
       vacationID: req.vacationID,
-      status : req.body.status,
-      titel : req.body.titel,
+      status: req.body.status,
+      titel: req.body.titel,
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       isRead: req.body.isRead
-     
+
 
     },
-      { where: {vacationID : req.body.vacationID } });
+      { where: { vacationID: req.body.vacationID } });
 
     console.log("Role aktualisiert");
     res.status("200").send('OK');
@@ -380,11 +380,84 @@ router.put('/api/Vacation', async (req, res) => {
 });
 
 
+/* -------------------------------------------------------------------API/USERDETAIL------------------------------------------------------------------------------------*/
+
+//Postman --> http://localhost:3000/api/userDetail?email=XXXXXX&password=XXXXXX
+
+/*---Login Ablgeich---*/
+router.get('/api/UserDetail', async (req, res) => {
+  try {
+    const email = req.query.email;
+    const password = req.query.password;
+    const user = await User.findOne({ where: { email } });
+
+    if (user) {
+      const hashedPassword = user.password;
+
+      const passwordMatch = await comparePassword(password, hashedPassword);
+
+      if (passwordMatch) {
+        const token = jwt.sign(
+          { user_id: email },
+          "secret",
+          {
+            expiresIn: "900000ms",
+          }
+        );
+        user.token = token;
+        res.send({ userID: user.userID, token });
+      } else {
+        res.status(401).send('Falsches Passwort');
+      }
+    } else {
+      res.status(404).send('Benutzer nicht gefunden');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Ein Fehler ist aufgetreten');
+  }
+});
+
+async function comparePassword(password, hashedPassword) {
+  return await bcrypt.compare(password, hashedPassword);
+}
 
 
 /* -------------------------------------------------------------------API/TeamVacation------------------------------------------------------------------------------------*/
 
 
+/* -------------------------------------------------------------------API/USERBYID------------------------------------------------------------------------------------*/
+/*---UserDaten im Dashboard Laden--- */
+router.get('/api/UserByID', async (req, res) => {
+  try {
+    var userID = req.query.userID;
+    console.log("Hier drunter sollte die ID stehebn:")
+    var user = await User.findByPk(userID);
+    if (!userID) {
+      res.status(404).send('Benutzer nicht gefunden');
+      return;
+    }
+    user.dataValues.appointments = [];
+    var vacationUser = await Vacation.findAll({ where: { userID: userID } });
+    if (vacationUser) {
 
+      if (user) {
+        vacationUser.forEach(element => {
+          delete element.dataValues.createdAt;
+          delete element.dataValues.updatedAt;
+          user.dataValues.appointments.push(element.dataValues);
+        });
+        var data = user.dataValues;
+        delete data.passwort;
+        res.send({ data });
+      }
+    } else {
+      res.status(404).send('Benutzer hat keinen Urlaub');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('User existiert nicht');
+  }
+});
 
 module.exports = router;
