@@ -325,6 +325,65 @@ try {
 }
 });
 
+/*--- DELETE Vacation--*/
+router.delete('/api/Vacation', async (req, res) => {
+ try {
+  const {userID, vacationID} = req.body;
+  if(userID && vacationID) {
+    await Vacation.destroy({where: {userID, vacationID}});
+    res.send("Urlaub wurde gelöscht");
+  } else {
+    res.send("Bitte geben Sie sowohl userID als auch urlaubsID an!")
+  }
+
+  
+
+} catch (error) {
+  console.error(error);
+  res.send("Urlaub wurde nicht gelöscht!");
+  res.send(error);
+}
+
+});
+
+
+
+
+/*--- PUT Vacation---*/
+
+router.put('/api/Vacation', async (req, res) => {
+  try {
+
+    
+
+    //Aktualisiere den Role mit den angegebenen Werten
+    await Vacation.update({
+      
+    
+      vacationID: req.vacationID,
+      status : req.body.status,
+      titel : req.body.titel,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      isRead: req.body.isRead
+     
+
+    },
+      { where: {vacationID : req.body.vacationID } });
+
+    console.log("Role aktualisiert");
+    res.status("200").send('OK');
+  } catch (error) {
+    console.error(error);
+    res.send({ error });
+  }
+});
+
+
+
+
+/* -------------------------------------------------------------------API/TeamVacation------------------------------------------------------------------------------------*/
+
 
 
 
