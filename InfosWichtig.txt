@@ -28,3 +28,11 @@ Rollen :
 
 
 Rollen zuweisung:  Meeseks  hat 3 Rollen   Mitarbeiter, Mitarbeiter Personalabteilung und Vorgesetzter
+
+
+
+
+
+CRUD User I.O
+CRUD Vacation I.O
+
