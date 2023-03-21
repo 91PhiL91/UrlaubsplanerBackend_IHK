@@ -424,15 +424,56 @@ async function comparePassword(password, hashedPassword) {
 
 
 /* -------------------------------------------------------------------API/TeamVacation------------------------------------------------------------------------------------*/
+router.get('/api/TeamVacation',  async (req, res) => {
+  var teamLeaderID = req.query.teamLeaderID;
+  var userIDArray = [];
+  var data = [];
+  var userArrayClean = [];
+  console.log("Anfrage auf TeamLeiterID: " + teamLeaderID);
 
+  const TeamObject = await Team.findAll({
+    where: { teamLeaderID: teamLeaderID },
+  })
+  if (TeamObject) {
+    // JOIN-Abfrage, um alle Benutzer und Urlaube zu finden, die mit der übergebenen "teamLeaderID" verknüpft sind
+    const userArray = await User.findAll({
+      where: { teamID: TeamObject[0].dataValues.teamID },
+    });
+    userArray.forEach(user => {
+      userIDArray.push(user.dataValues.userID);
+      userArrayClean.push(user.dataValues)
+    })
+    console.log(userArrayClean);
+    var vacationArray = await Vacation.findAll({ where: { userID: userIDArray } });
+    if (vacationArray) {
+      vacationArray.forEach(urlaub => {
+        var oEntry = userArrayClean.find(function (oEntry) {
+          return oEntry.userID === Vacation.dataValues.userID;
+        });
+        Vacation.dataValues.firstName = oEntry.firstName;
+        Vacation.dataValues.lastName = oEntry.lastName;
+        Vacation.dataValues.restVacation = oEntry.restVacation;
+        Vacation.dataValues.plannedVacation = oEntry.plannedVacation;
+        data.push(Vacation.dataValues);
+      });
+      res.send(data);
+    } else {
+      res.send("Fehler beim Laden der Urlaubsdaten");
+    }
+  } else {
+    res.status(404).send({ message: "Keine Team zur Teamleiter id gefunden" });
+  }
+});
 
 /* -------------------------------------------------------------------API/USERBYID------------------------------------------------------------------------------------*/
+
 /*---UserDaten im Dashboard Laden--- */
+
 router.get('/api/UserByID', async (req, res) => {
   try {
-    var userID = req.query.userID;
-    console.log("Hier drunter sollte die ID stehebn:")
-    var user = await User.findByPk(userID);
+    const userID = req.query.userID;
+    console.log("Hier drunter sollte die ID stehebn:", userID);
+    const user = await User.findByPk(userID);
     if (!userID) {
       res.status(404).send('Benutzer nicht gefunden');
       return;
