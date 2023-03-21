@@ -16,6 +16,6 @@ app.use('/', service);
 
 module.exports = router; 
 
-app.listen(3000, () => { // Starten des Servers auf Port 3000
+app.listen(3005, () => { // Starten des Servers auf Port 3000
     console.log('Server started on port 3000'); // Ausgabe in der Konsole
   });

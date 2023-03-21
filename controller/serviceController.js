@@ -424,38 +424,48 @@ async function comparePassword(password, hashedPassword) {
 
 
 /* -------------------------------------------------------------------API/TeamVacation------------------------------------------------------------------------------------*/
+
 router.get('/api/TeamVacation',  async (req, res) => {
   var teamLeaderID = req.query.teamLeaderID;
   var userIDArray = [];
   var data = [];
   var userArrayClean = [];
   console.log("Anfrage auf TeamLeiterID: " + teamLeaderID);
+debugger;
 
   const TeamObject = await Team.findAll({
     where: { teamLeaderID: teamLeaderID },
   })
+
   if (TeamObject) {
     // JOIN-Abfrage, um alle Benutzer und Urlaube zu finden, die mit der übergebenen "teamLeaderID" verknüpft sind
     const userArray = await User.findAll({
       where: { teamID: TeamObject[0].dataValues.teamID },
-    });
+      
+    })
+    debugger;
     userArray.forEach(user => {
       userIDArray.push(user.dataValues.userID);
+      console.log("Das ist das userIDArray: " + userIDArray);
       userArrayClean.push(user.dataValues)
     })
+    debugger;
     console.log(userArrayClean);
-    var vacationArray = await Vacation.findAll({ where: { userID: userIDArray } });
+    var vacationArray = await Vacation.findAll({ where: { userID: userIDArray.userID } });
+    console.log(vacationArray);
+    debugger;
     if (vacationArray) {
-      vacationArray.forEach(urlaub => {
+      vacationArray.forEach(vacation => {
         var oEntry = userArrayClean.find(function (oEntry) {
-          return oEntry.userID === Vacation.dataValues.userID;
+          return oEntry.userID === vacation.dataValues.userID;
         });
-        Vacation.dataValues.firstName = oEntry.firstName;
-        Vacation.dataValues.lastName = oEntry.lastName;
-        Vacation.dataValues.restVacation = oEntry.restVacation;
-        Vacation.dataValues.plannedVacation = oEntry.plannedVacation;
-        data.push(Vacation.dataValues);
+        vacation.dataValues.firstName = oEntry.firstName;
+        vacation.dataValues.lastName = oEntry.lastName;
+        vacation.dataValues.restVacation = oEntry.restVacation;
+        vacation.dataValues.plannedVacation = oEntry.plannedVacation;
+        data.push(vacation.dataValues);
       });
+      debugger;
       res.send(data);
     } else {
       res.send("Fehler beim Laden der Urlaubsdaten");
