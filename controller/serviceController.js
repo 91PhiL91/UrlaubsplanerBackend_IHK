@@ -58,18 +58,18 @@ router.post('/api/User', async (req, res) => {
 router.put('/api/User', async (req, res) => {
   try {
 
-    /*--
-     // Überprüfen, ob die angegebene teamId in der Team Tabelle vorhanden ist
+    
+    //  Überprüfen, ob die angegebene teamId in der Team Tabelle vorhanden ist
  
-     // if (req.body.teamId) {
-     //   const team = await Team.findByPk(req.body.teamID);
-     //   if (!team) {
-     //     res.status(400).send('Ungültige teamId');
-     //     return;
-     //   }
-     // }
-     //console.log(req.body);
-     --*/
+     if (req.body.teamID) {
+       const team = await Team.findByPk(req.body.teamID);
+       if (!team) {
+         res.status(400).send('Ungültige teamId');
+         return;
+       }
+     }
+     console.log(req.body);
+     
 
     //Aktualisiere den User mit den angegebenen Werten
     await User.update({
@@ -133,7 +133,7 @@ router.delete('/api/User', async (req, res) => {
 
 
 
-/* -------------------------------------------------------------------API/USERTEAM------------------------------------------------------------------------------------*/
+/* -------------------------------------------------------------------API/Team------------------------------------------------------------------------------------*/
 
 
 /*---Create Team in DB--- */
@@ -158,6 +158,92 @@ router.post('/api/Team', async (req, res) => {
   }
 });
 
+
+
+
+/*--- GET Team ---*/
+
+router.get('/api/Team', async (req, res) => {
+  console.log(req.query);
+  var teamLeaderID = req.query.teamLeaderID;
+  var data = [];
+
+  console.log("Anfrage auf TeamleiterID: " + teamLeaderID);
+  
+  const TeamObject = await Team.findAll({
+    where: { teamLeaderID: teamLeaderID },
+  })
+  if(TeamObject[0]){
+    console.log(TeamObject);
+
+    const userArray = await User.findAll({
+      where: { teamID: TeamObject[0].dataValues.teamID },
+    });
+  
+    if (userArray) {
+      for (let i = 0; i < userArray.length; i++) {
+        const user = userArray[i];
+        const userData = user.dataValues;
+        delete userData.createdAt;
+        delete userData.updatedAt;
+        userData.appointments = [];
+        const vacation = await Vacation.findAll({
+          where: { userID: userData.userID }
+        });
+  
+        if (vacation && vacation.length > 0) {
+          vacation.forEach(element => {
+            delete element.dataValues.createdAt;
+            delete element.dataValues.updatedAt;
+            userData.appointments.push(element.dataValues);
+          });
+        }
+  
+        delete userData.password;
+        data.push(userData);
+      }
+  
+      res.send({ data });
+    } else {
+      res.status(404).send({ message: "Keine Benutzer gefunden" });
+    }
+  }else{
+    res.status(404).send({ message: "Keine Team zur Teamleiter id gefunden" });
+  }
+ 
+});
+
+
+/*--- Delete Team ---*/
+
+router.delete('/api/Team', async (req, res) => {
+  
+  Team.findAll({
+    where: {
+      teamLeiterId: 1 // oder andere ID
+    }
+  }).then(teams => {
+    console.log(teams);
+  });
+
+  const { teamLeiterId } = req.body;
+  if (!teamLeiterId) {
+    return res.status(400).send("Es wurde keine teamLeiterId übergeben.");
+  }
+
+  try {
+    const affectedRows = await User.update({ teamLeiterId: null }, { where: { teamLeiterId } });
+    if (affectedRows > 0) {
+      await Team.destroy({ where: { teamLeiterId } });
+      res.send(`Team mit teamLeiterId ${teamLeiterId} wurde gelöscht.`);
+    } else {
+      res.status(404).send(`Es wurde kein Team mit teamLeiterId ${teamLeiterId} gefunden.`);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Ein Fehler ist aufgetreten.");
+  }
+});
 
 
 
@@ -430,30 +516,33 @@ router.get('/api/TeamVacation',  async (req, res) => {
   var userIDArray = [];
   var data = [];
   var userArrayClean = [];
+
   console.log("Anfrage auf TeamLeiterID: " + teamLeaderID);
-debugger;
+
 
   const TeamObject = await Team.findAll({
     where: { teamLeaderID: teamLeaderID },
   })
+  console.log()
 
   if (TeamObject) {
     // JOIN-Abfrage, um alle Benutzer und Urlaube zu finden, die mit der übergebenen "teamLeaderID" verknüpft sind
     const userArray = await User.findAll({
       where: { teamID: TeamObject[0].dataValues.teamID },
-      
-    })
-    debugger;
+     
+    });
+    console.log("Das müsste die TeamID seiN:" + TeamObject[0].dataValues.teamID);
+    console.log(userArray);
+
     userArray.forEach(user => {
       userIDArray.push(user.dataValues.userID);
       console.log("Das ist das userIDArray: " + userIDArray);
       userArrayClean.push(user.dataValues)
     })
-    debugger;
+  
     console.log(userArrayClean);
-    var vacationArray = await Vacation.findAll({ where: { userID: userIDArray.userID } });
-    console.log(vacationArray);
-    debugger;
+    var vacationArray = await Vacation.findAll({ where: { userID: userIDArray } });
+    
     if (vacationArray) {
       vacationArray.forEach(vacation => {
         var oEntry = userArrayClean.find(function (oEntry) {
@@ -465,7 +554,7 @@ debugger;
         vacation.dataValues.plannedVacation = oEntry.plannedVacation;
         data.push(vacation.dataValues);
       });
-      debugger;
+   
       res.send(data);
     } else {
       res.send("Fehler beim Laden der Urlaubsdaten");
@@ -475,7 +564,7 @@ debugger;
   }
 });
 
-/* -------------------------------------------------------------------API/USERBYID------------------------------------------------------------------------------------*/
+/* -------------------------------------------------------------------API/UserByID------------------------------------------------------------------------------------*/
 
 /*---UserDaten im Dashboard Laden--- */
 
