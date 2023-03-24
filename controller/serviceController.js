@@ -589,6 +589,42 @@ router.get('/api/UserByID', async (req, res) => {
         });
         var data = user.dataValues;
         delete data.passwort;
+
+        var userRoleArray = await UserRole.findAll({
+          where: { userID: userID }
+        })
+
+        const RoleArray = await Role.findAll();
+
+        if(userRoleArray) {
+          userRoleArray.forEach(userRole => {
+            var role = RoleArray.find(function (oEntry) {
+              return oEntry.roleID === userRole.roleID;
+            });
+            switch (role.roleName) {
+              case "Administrator":
+                data.isAdmin = true;
+                break;
+              case "Vorgesetzter":
+                data.isSupervisor = true;
+                break;
+              case "Mitarbeiter":
+                data.isEmployee = true;
+                break;
+              case "Mitarbeiter Personalabteilung":
+                data.isHR = true;
+                break;
+              default:
+
+                break;
+                
+            }
+          });
+          console.log("UserData:");
+          console.log(user);
+        }
+
+
         res.send({ data });
       }
     } else {
