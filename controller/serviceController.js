@@ -369,20 +369,23 @@ router.get('/api/UserRole', async (req, res) => {
 router.post('/api/Vacation', async (req, res) => {
   try {
 
-
+    	var data = req.body;
+      console.log("Hier drunter müssten die Appointments für Vacation.Build übergeben werden!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      console.log(data);
 
     await Vacation.sync();
     const newVacation = Vacation.build({
       vacationID: uuidv4(),
-      status: req.body.status,
-      titel: req.body.titel,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      isRead: req.body.isRead,
-      userID: req.body.userID
+      status: data['oAppointment[status]'],
+      titel: data['oAppointment[titel]'],
+      startDate: data['oAppointment[start]'],
+      endDate: data['oAppointment[end]'],
+      isRead: data['oAppointment[isRead]'],
+      userID: data['oAppointment[userID]']
 
     });
 
+    console.log("Hier drunter müsste der beantrage Urlaub stehen: ")
     console.log(newVacation);
 
     await newVacation.save();
