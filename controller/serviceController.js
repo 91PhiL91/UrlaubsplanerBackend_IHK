@@ -158,12 +158,29 @@ router.post('/api/Team', async (req, res) => {
   }
 });
 
+/*--GET TEAM-- */
+
+router.get('/api/Team', async (req, res)=> {
+try {
+
+  var allTeams = await Team.findAll();
+  console.log(allTeams);
+  res.send({allTeams});
+  
+} catch (error) {
+  console.log(error);
+  res.send({error});
+}
+
+
+
+});
 
 
 
 /*--- GET Team ---*/
-
-router.get('/api/Team', async (req, res) => {
+//ursrpünglich /Team 
+router.get('/api/UserTeam', async (req, res) => {
   console.log(req.query);
   var teamLeaderID = req.query.teamLeaderID;
   var data = [];
