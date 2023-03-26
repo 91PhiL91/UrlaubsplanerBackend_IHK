@@ -421,9 +421,10 @@ router.post('/api/Vacation', async (req, res) => {
 router.get('/api/Vacation', async (req, res) => {
   try {
 
-    const vacationAll = await Vacation.findAll();
-    console.log(vacationAll);
-    res.send(vacationAll);
+    var data = await Vacation.findAll();
+    console.log(data);
+    
+    res.send({data});
 
   } catch (error) {
     console.error(error);
