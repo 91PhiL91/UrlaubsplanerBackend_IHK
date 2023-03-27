@@ -422,6 +422,7 @@ router.get('/api/Vacation', async (req, res) => {
   try {
 
     var data = await Vacation.findAll();
+    var userData = await User.findAll(where : {userID })
     console.log(data);
     
     res.send({data});
