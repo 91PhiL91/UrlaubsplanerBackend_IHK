@@ -163,9 +163,9 @@ router.post('/api/Team', async (req, res) => {
 router.get('/api/Team', async (req, res)=> {
 try {
 
-  var allTeams = await Team.findAll();
-  console.log(allTeams);
-  res.send({allTeams});
+  var data = await Team.findAll();
+  console.log(data);
+  res.send({data});
   
 } catch (error) {
   console.log(error);
